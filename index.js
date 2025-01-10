@@ -1,10 +1,10 @@
+const express = require('express');
 const { getVideo } = require('@neoxr/youtube-scraper');
 
-export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+const app = express();
+const PORT = process.env.PORT || 3000;
 
+app.get('/api/youtube-downloader', async (req, res) => {
   const { url } = req.query;
 
   if (!url) {
@@ -26,4 +26,8 @@ export default async function handler(req, res) {
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch video details', details: error.message });
   }
-}
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
