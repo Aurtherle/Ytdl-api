@@ -1,33 +1,34 @@
-const express = require('express');
-const { getVideo } = require('@neoxr/youtube-scraper');
+const { Youtube } = require('@neoxr/youtube-scraper');
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+// Initialize the YouTube scraper with configuration
+const yt = new Youtube({
+  fileAsUrl: true // Ensures the returned file is a direct URL
+});
 
-app.get('/api/youtube-downloader', async (req, res) => {
-  const { url } = req.query;
-
-  if (!url) {
-    return res.status(400).json({ error: 'You must provide a YouTube URL' });
-  }
-
+// Function to search and retrieve video details
+async function getYoutubeVideo(query, format = 'video, 720p') {
   try {
-    const videoData = await getVideo(url);
+    console.log(`Searching for "${query}" with format "${format}"...`);
+
+    // Fetch the video information
+    const videoData = await yt.play(query, format);
+
     if (!videoData) {
-      return res.status(404).json({ error: 'Video not found' });
+      console.error('No video found for the query!');
+      return;
     }
 
-    res.status(200).json({
-      title: videoData.title,
-      description: videoData.description,
-      thumbnail: videoData.thumbnail,
-      video_url: videoData.formats[0].url, // First format's URL
-    });
+    // Print the retrieved video data
+    console.log('Video Details:');
+    console.log(`Title: ${videoData.title}`);
+    console.log(`Duration: ${videoData.duration}`);
+    console.log(`Thumbnail: ${videoData.thumbnail}`);
+    console.log(`Download URL: ${videoData.url}`);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch video details', details: error.message });
+    // Handle errors (e.g., video not found, invalid format)
+    console.error('Error:', error.message);
   }
-});
+}
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+// Run the function with a search query
+getYoutubeVideo('wide awake', 'video, 720p');
