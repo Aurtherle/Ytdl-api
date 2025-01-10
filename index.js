@@ -5,4 +5,4 @@ const yt = new Youtube({
   fileAsUrl: true // Ensures the returned file is a direct URL
 })
 
-yt.play('sickick infected).then(console.log)
+yt.play('sickick infected').then(console.log)
