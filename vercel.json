@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/youtube-downloader.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/youtube-downloader",
+      "dest": "/api/youtube-downloader.js"
+    }
+  ]
+}
